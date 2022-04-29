@@ -1,61 +1,62 @@
-# D-semana1
-EXERCÍCIOS PRÁTICOS - Semana 1
+Atualizacao: Enviei o link na semana errada, nome do repositorio esta com o tema do exercicio da semana 1, porem, logo abaixo será a explicacao da semana 2.
 
-Com base nas aulas dessa semana, iremos colocar em prática os conceitos teóricos vistos em aula
 
-Crie uma rede pública(vpc) na Amazon com todos os recursos necessários para ter acesso a Internet.
+1- Crie um serviço de mensagens em fila usando a Amazon SQS.
+  1.1-Podemos criar filas tanto pela aws quando e pelo terminal aws cli:
+  pela aws
+  1 - ENTRA EM SQS - CREATE FILA
+  2 - STANDARD - PARA MANDAR FORA ORDEM (FIFO - MANDA NA ORDEM)
+  3-  NOME DA FILA - FILA-GABRIELLI
+  4- configuration - deixar como ta la - create que
+  5-  clicamos na fila e - send messeger
+  6- escreve uma msg e - send messeger
+  7- refresh aparece messages available  1
+  8- instalar - install aws cli Mac
+  9 - inicializar no terminal - aws configure
+  10- vamos gerar um user para gerar key e password
+  11- vamos em iam - users - add users - escreve um nome -  asco key - next - create group - da o nome busca por sqs e marca os 3 - create group - next tags - next review - create group 
+  12- ai foi gerado o acess ket e password
+  13- adiciona a acc key no terminal que ta com o AWS Asco key id … 
+  A senha que ta do lado
+  Região - us-east-1
+  Format - json
+  
+  1.2- Criando uma fila nova pelo terminal : 
+    aws sqs create-queue --queue-name MyQueueGabrieli
+  15- gerou :
+    {
+      "QueueUrl": "https://sqs.us-east-1.amazonaws.com/755977887883/MyQueueGabrieli"
+  }
+  16- fui em sqs para verificar se criou minha fica myqyeyegabrielli - via linha de comando
+  17- listar lista de sqs - AWS sqs list-queues
+  18- mandar msg do meu terminal pra amazon - aws sqs send-message --message-body="testando 4” --queue-url="https://sqs.us-east-1.amazonaws.com/755977887883/MyQueueGabrieli"
+  19- gerou:
+    {
+      "MD5OfMessageBody": "caa9c8f8620cbb30679026bb6427e11f",
+      "MessageId": "3cee14dc-8d77-498b-be9f-8addccec392c"
+  }
+  20- para receber as msg:
+    aws sqs receive-message --queue-url="https://sqs.us-east-1.amazonaws.com/755977887883/MyQueueGabrieli"
+  21- para esperar msg - 
+    aws sqs receive-message --queue-url="https://sqs.us-east-1.amazonaws.com/755977887883/MyQueueGabrieli" --wait-time-seconds=20
+  22- deletar msg pelo terminal - 
+    aws sqs delete-message --queue-url="https://sqs.us-east-1.amazonaws.com/755977887883/MyQueueGabrieli" --receipt-handle=“valor que vem do  "ReceiptHandle"
+  23- para deletar a fila toda - aws sqs delete-queue --queue-url=“url da fila”
+  
+    1.3- Utilizando como base o repositorio do Professor, para utilizar o sqs com java:
+    
+    
 
-Importante: deixar esta rede em datacenters diferentes
 
-Depois crie um EC2 e faça a conexão via ssh na máquina criada.
+2- Compare e descreva as diferenças e o objetivo entre a Amazon SQS e a Amazon SNS.
 
-1- Criando a vpc (criar redes virtuais):
-  1.1- Buscamos em - https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1# -> VPC - > vpc's
-   1.2- create vpc -> name 
-   1.3- vamos na tabela Calculadora de rede para IPV4 -> https://www.site24x7.com/pt/tools/ipv4-sub-rede-calculadora.html
-     1.3.1- 10.24.0.0/24 - vou usar em IPv4 CIDR
-     1.3.2- create vpc
-     1.3.3- selecionei a vpc que criei -> actions -> Edit DNS hostnames -> Enable
-   1.4- Apos criar a vpc, vamos criar as subnets (subredes)- create subnet  
-     1.4.1- VPC ID -> escolho a minha vpc criada.
-     1.4.2- Subnet settings -> 
-        Subnet name - > ex: Subnet-name-1a
-        Availability Zone -> n. virginia 1a
-        IPv4 CIDR block -> valor do Subnet ID - 1- na calculadora de sub rede
-        
-        Subnet name - > ex: Subnet-name-1b
-        Availability Zone -> n. virginia 1b
-        IPv4 CIDR block -> valor do Subnet ID - 2- na calculadora de sub rede
-        
-        Subnet name - > ex: Subnet-name-1c
-        Availability Zone -> n. virginia 1c
-        IPv4 CIDR block -> valor do Subnet ID - 3- na calculadora de sub rede
-      1.4.3- create subnet
-    1.5- Para tornar nosso acesso publico vamos em -> internet gateway -> Internet gateway settings -> create
-    1.6- temos que adicionar na nossa internet gateway uma vpc -> actions -> attach internet gateway -> seleciona nossa vpc -> attach...
-    1.7- Vamos configurar agora o route tables
-       1.7.1- Da um nome e seleciona a nossa vpc
-       1.7.2- Precisamos de um acesso externos -> criaremos outra rota-> edit routes -> add routes
-          1.7.2.1- 0.0.0.0/0 -> internet gateway -> save 
-       1.7.3- vamos em subnet associations -> Explicit subnet associations (0) -> edit -> selecionamos as que queremos deixar publica
-       1.7.4- save associations 
-       
- 2- Criarei agora a maquina - ec2
-    2.1- instances - > launch instances 
-       2.1.1- Selecionaremos -> Ubuntu Server 20.04 LTS (HVM), SSD Volume Type - ami-04505e74c0741db8d (64-bit x86) / ami-0b49a4a6e8e22fa16 (64-bit Arm)
-       2.1.2- t2.micro -> free
-       2.1.3- configure instance 
-          2.1.3.1-  instance - 1
-          2.1.3.2-  Network - seleciona minha vpc
-          2.1.3.3-  Subnet - uma das 3 subnets ( publica)
-          2.1.3.4-  Auto-assign Public IP - enable
-       2.1.4- add storage -> add tags -> configure security -> gab-security -> review and launch -> launch-> seleciona minha key pair 
-       2.1.5- launch instances -> The following instance launches have been initiated: i-... -> clica nesse link -> connect -> ssh client
-       2.1.6- copia o ssh -> ssh -i ....amazonaws.com
-  3- vamos no terminal - na pasta onde estao as nossas chaves-> e cola a ssh copiada no passso acima
-      3.1 - substituimos o "gabrielli..."por id_rsa e damos enter -> yes
-  4- maquina ta rodando.
-          
+SNS - é um servico de notificacoes, por exemplo, se algo esta errado, atravez da notificacao conseguimos configurar, tem um baixo custo, gerenciavel pela aws, facil usabilidade, e tem varios endpoints como: email, sms, http, https, sqs, lambda (toma alguma acao) e etc...
+SQS - é um servico de fila de mensagens gerenciado, tem tambem um baixo custo, é tambem gerenciavel pela aws, tem a dlq  - fila secundaria para nao perder nenhuma transacao. 
+
+Uma das diferencas é que o sns é global e o sqs é regional. O servico de fila é interessante para armazenar todos os processamentos e executar conforme temos recurso. o servico de fila nao chama o backend diretamente, armazena na fila e pode chamar ou pode ser chamado para executar uma acao. Podemos criar configuracaos de acordo com a fila, gerando novos servidores, que vao ate o servico de fila e gerenciando.
+    front - sqs - back
+                - back
+                - back ...
           
           
           
