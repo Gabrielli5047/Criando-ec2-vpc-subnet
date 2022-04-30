@@ -44,6 +44,7 @@ Atualizacao: Enviei o link na semana errada, nome do repositorio esta com o tema
   23- para deletar a fila toda - aws sqs delete-queue --queue-url=“url da fila”
   
     1.3- Utilizando como base o repositorio do Professor, para utilizar o sqs com java:
+    https://github.com/Gabrielli5047/sqs-gabrielli-teste-java
     
     
 
